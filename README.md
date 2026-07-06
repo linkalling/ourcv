@@ -2,9 +2,25 @@
 
 > 你的经历，你来落笔。
 
+<p align="center">
+  <a href="https://linkalling.github.io/ourcv/"><strong>在线体验</strong></a>
+  ·
+  <a href="https://github.com/linkalling/ourcv/releases/tag/v0.4.0"><strong>下载 v0.4.0</strong></a>
+  ·
+  <a href="https://github.com/linkalling/ourcv/issues"><strong>反馈问题</strong></a>
+</p>
+
 OurCV 是一个**隐私优先、无需登录、开箱即用**的静态简历编辑器。打开网页即可直接修改简历，文字和照片默认只保存在当前浏览器，不需要把求职信息上传到业务服务器。
 
 项目由原生 HTML、CSS 和 JavaScript 构成，无需安装依赖或执行构建命令。下载后双击 `index.html` 即可使用，也可以直接部署到 GitHub Pages。
+
+<p align="center">
+  <a href="https://linkalling.github.io/ourcv/">
+    <img src="assets/ourcv-preview.png" alt="OurCV 英文双栏模板示例" width="860">
+  </a>
+</p>
+
+<p align="center"><sub>英文双栏模板示例 · 点击图片进入在线编辑器</sub></p>
 
 ## 功能
 
