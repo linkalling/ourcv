@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OurCV：隐私优先、无需登录的静态简历编辑器">
+  <title>OurCV｜把经历写成一页好简历</title>
+  <link rel="icon" href="assets/ourcv-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-editing">
+  <header class="app-bar" aria-label="简历编辑工具栏">
+    <a class="brand" href="#" aria-label="OurCV 首页">
+      <img class="brand-mark" src="assets/ourcv-mark.svg" alt="" width="38" height="38">
+      <span>
+        <strong>OurCV</strong>
+        <small>你的经历，你来落笔</small>
+      </span>
+    </a>
+
+    <div class="document-state" aria-live="polite">
+      <span class="state-dot"></span>
+      <span id="saveStatus">已保存在本机</span>
+    </div>
+
+    <nav class="toolbar-actions" aria-label="文档操作">
+      <button class="button button-ghost privacy-button" id="privacyButton" type="button" aria-haspopup="dialog" aria-controls="privacyDrawer">隐私说明</button>
+      <button class="button button-ghost style-button" id="styleButton" type="button" aria-expanded="false" aria-controls="styleDock">模板</button>
+      <button class="button button-ghost" id="resetButton" type="button">恢复示例</button>
+      <button class="button button-ghost" id="fitButton" type="button">智能一页</button>
+      <button class="button button-ghost" id="modeButton" type="button">
+        <span id="modeIcon">✓</span>
+        <span id="modeLabel">保存</span>
+      </button>
+      <button class="button button-secondary" id="pngButton" type="button">导出 PNG</button>
+      <button class="button button-primary" id="pdfButton" type="button">导出 PDF</button>
+    </nav>
+  </header>
+
+  <div class="mobile-hint" role="note">左右滑动查看完整纸张，内容会自动保存在本机。</div>
+
+  <main class="workspace">
+    <div class="paper-wrap">
+      <div class="paper-ruler" aria-hidden="true"><span>A4</span><i></i></div>
+      <div class="paper-ruler-v" aria-hidden="true"><i></i></div>
+      <article id="resume" class="resume-page" aria-label="简历内容"></article>
+      <p class="privacy-caption">数据不会离开你的设备</p>
+    </div>
+
+    <aside class="theme-dock edit-only" id="styleDock" aria-label="简历主题">
+      <span class="dock-kicker">STYLE</span>
+      <h2>版式模板</h2>
+      <div class="layout-options">
+        <button class="layout-choice is-active" type="button" data-layout-choice="classic">
+          <i class="layout-preview layout-preview-classic" aria-hidden="true"><b></b><b></b><b></b></i>
+          <span><strong>经典单栏</strong></span>
+        </button>
+        <button class="layout-choice" type="button" data-layout-choice="editorial">
+          <i class="layout-preview layout-preview-editorial" aria-hidden="true"><b></b><b></b><b></b></i>
+          <span><strong>经典双栏</strong></span>
+        </button>
+      </div>
+      <h3>配色主题</h3>
+      <div class="theme-options">
+        <button class="theme-choice is-active" type="button" data-theme-choice="warm">
+          <i style="--swatch-paper:#fffefa;--swatch-accent:#c94e32"></i><span>暖砂红</span>
+        </button>
+        <button class="theme-choice" type="button" data-theme-choice="classic">
+          <i style="--swatch-paper:#ffffff;--swatch-accent:#555b61"></i><span>白灰经典</span>
+        </button>
+        <button class="theme-choice" type="button" data-theme-choice="blue">
+          <i style="--swatch-paper:#ffffff;--swatch-accent:#275f9e"></i><span>白蓝清朗</span>
+        </button>
+        <button class="theme-choice" type="button" data-theme-choice="forest">
+          <i style="--swatch-paper:#fffefb;--swatch-accent:#3e6b58"></i><span>白绿沉静</span>
+        </button>
+      </div>
+      <div class="page-meter">
+        <span>智能版面</span>
+        <strong id="pageStatus">1 页 · 标准间距</strong>
+        <small style="display:block;margin-top:8px;color:#9b958c;font-size:10px;font-style:italic;">大模型修改模式待上线……</small>
+      </div>
+    </aside>
+  </main>
+
+  <input id="portraitInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+  <input id="backupInput" type="file" accept="application/json,.json" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="drawer-layer" id="privacyLayer" aria-hidden="true">
+    <button class="drawer-scrim" id="privacyScrim" type="button" aria-label="关闭隐私说明"></button>
+    <aside class="privacy-drawer" id="privacyDrawer" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+      <div class="drawer-head">
+        <div>
+          <span class="drawer-kicker">PRIVATE BY DESIGN</span>
+          <h2 id="privacyTitle">你的简历，只属于你</h2>
+        </div>
+        <button class="drawer-close" id="privacyCloseButton" type="button" aria-label="关闭隐私说明">×</button>
+      </div>
+
+      <p class="drawer-lead">OurCV 把简历编辑留在你的浏览器里。我们尽量少知道，也不靠收集你的求职信息来换取服务。</p>
+
+      <ol class="privacy-list">
+        <li><strong>简历内容不上传</strong><span>正文、电话、邮箱和照片不会发送到 OurCV 服务器。</span></li>
+        <li><strong>保存在当前浏览器</strong><span>编辑数据通过浏览器 localStorage 保存，换设备或清理浏览器前请先下载备份。</span></li>
+        <li><strong>随时一键清除</strong><span>你可以立即删除这台设备上保存的简历内容，不需要联系我们。</span></li>
+        <li><strong>支持本地迁移</strong><span>备份文件直接下载到本机，也可以重新导入；过程不经过服务器。</span></li>
+        <li><strong>不接入广告</strong><span>不使用广告脚本追踪你的浏览或求职行为。</span></li>
+        <li><strong>核心代码可核验</strong><span>编辑器由可直接检查的 HTML、CSS 和 JavaScript 构成；开源仓库将在上线时同步提供。</span></li>
+        <li><strong>基础访问日志除外</strong><span>网站服务器可能因安全与运维需要产生 IP、访问时间、浏览器类型等基础日志，但不包含简历正文和照片。</span></li>
+      </ol>
+
+      <div class="privacy-actions" aria-label="本地数据操作">
+        <button class="drawer-action" id="downloadBackupButton" type="button">
+          <span>↓</span><strong>下载本地备份</strong><small>保存为 JSON 文件</small>
+        </button>
+        <button class="drawer-action" id="importBackupButton" type="button">
+          <span>↑</span><strong>导入备份</strong><small>从本机恢复内容</small>
+        </button>
+        <button class="drawer-action drawer-action-danger" id="clearResumeButton" type="button">
+          <span>×</span><strong>一键清除本机简历</strong><small>此操作无法撤销</small>
+        </button>
+      </div>
+
+      <p class="privacy-law">OurCV 参考数据最小化与本地优先原则设计，相关规则可参阅
+        <a href="https://www.cac.gov.cn/2021-08/20/c_1631050028355286.htm" target="_blank" rel="noopener noreferrer">《中华人民共和国个人信息保护法》</a>
+      </p>
+    </aside>
+  </div>
+
+  <div class="export-mask" id="exportMask" aria-hidden="true">
+    <div class="export-card">
+      <span class="spinner"></span>
+      <strong id="exportTitle">正在整理纸张</strong>
+      <p id="exportDetail">马上就好，请不要关闭页面</p>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="noscript">OurCV 需要启用 JavaScript 才能编辑和保存简历。</div>
+  </noscript>
+  <script src="app.js"></script>
+</body>
+</html>

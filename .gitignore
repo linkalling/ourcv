@@ -1,0 +1,29 @@
+# Secrets
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+
+# Local resume data and exports
+OurCV-本地备份-*.json
+*-OurCV.pdf
+*-OurCV.png
+*.local.json
+
+# Local tooling
+.render-profile*/
+.audit-*/
+.vscode/
+.idea/
+
+# Operating systems
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.log
+~$*
